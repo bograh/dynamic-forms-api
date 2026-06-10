@@ -1,0 +1,18 @@
+package dev.ograh.dynamicforms.auth.dto;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public record RegisterRequest(
+        @NotBlank(message = "Name cannot be blank")
+        @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters long")
+        String name,
+
+        @NotBlank(message = "Email cannot be blank")
+        @Email(message = "Email is not valid")
+        String email,
+
+        @Size(min = 6, message = "Password must be at least 6 characters long")
+        String password
+) {}
