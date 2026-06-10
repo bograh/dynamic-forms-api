@@ -69,7 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (JwtAuthenticationException e) {
             SecurityContextHolder.clearContext();
-            ErrorResponse errorResponse = new ErrorResponse(
+            ErrorResponse errorResponse = ErrorResponse.of(
                     e.getMessage(),
                     HttpStatus.UNAUTHORIZED.getReasonPhrase(),
                     HttpStatus.UNAUTHORIZED.value(),

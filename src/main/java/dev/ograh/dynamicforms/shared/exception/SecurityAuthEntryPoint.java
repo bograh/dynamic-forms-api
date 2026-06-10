@@ -20,7 +20,7 @@ public class SecurityAuthEntryPoint implements AuthenticationEntryPoint {
                          @NonNull HttpServletResponse response,
                          @NonNull AuthenticationException authException) throws IOException, ServletException {
 
-        ErrorResponse errorResponse = new ErrorResponse(
+        ErrorResponse errorResponse = ErrorResponse.of(
                 "Unauthorized",
                 HttpStatus.UNAUTHORIZED.getReasonPhrase(),
                 HttpStatus.UNAUTHORIZED.value(),

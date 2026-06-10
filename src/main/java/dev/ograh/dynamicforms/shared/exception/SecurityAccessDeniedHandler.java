@@ -21,7 +21,7 @@ public class SecurityAccessDeniedHandler implements AccessDeniedHandler {
             @NonNull HttpServletResponse response,
             @NonNull AccessDeniedException accessDeniedException) throws IOException, ServletException {
 
-        ErrorResponse errorResponse = new ErrorResponse(
+        ErrorResponse errorResponse = ErrorResponse.of(
                 "Access Denied",
                 HttpStatus.FORBIDDEN.getReasonPhrase(),
                 HttpStatus.FORBIDDEN.value(),
