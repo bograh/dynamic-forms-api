@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @Entity
 @Builder
-@Table(name = "forms_fields")
+@Table(name = "form_fields")
 @NoArgsConstructor
 @AllArgsConstructor
 public class FormField extends BaseEntity {

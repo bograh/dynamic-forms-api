@@ -39,7 +39,9 @@ CREATE TABLE form_submissions (
     form_id      UUID NOT NULL REFERENCES forms(id),
     submitted_by VARCHAR(255),
     submitted_at TIMESTAMPTZ DEFAULT NOW(),
-    data         JSONB NOT NULL
+    data         JSONB NOT NULL,
+    created_at  TIMESTAMPTZ DEFAULT NOW(),
+    updated_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE INDEX idx_form_submissions_form_id ON form_submissions(form_id);
