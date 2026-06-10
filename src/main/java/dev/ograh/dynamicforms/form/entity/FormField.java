@@ -2,10 +2,10 @@ package dev.ograh.dynamicforms.form.entity;
 
 import dev.ograh.dynamicforms.form.enums.FieldType;
 import dev.ograh.dynamicforms.shared.BaseEntity;
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.List;
 
@@ -33,11 +33,11 @@ public class FormField extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private FieldType fieldType;
 
-    @Type(JsonBinaryType.class)
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private List<FieldOption> options;
 
-    @Type(JsonBinaryType.class)
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private FieldValidation validation;
 }
