@@ -5,10 +5,10 @@ A REST API for building and submitting dynamic forms. Admins define form schemas
 ## Tech Stack
 
 - **Java 21** / **Spring Boot 4**
-- **Spring Security** — stateless JWT auth, Argon2 password hashing
-- **PostgreSQL** — JSONB columns for field options, validation rules, and submission data
-- **Flyway** — versioned schema migrations
-- **Hibernate 7** — JPA with schema validation on startup
+- **Spring Security** - stateless JWT auth, BCrypt password hashing
+- **PostgreSQL** - JSONB columns for field options, validation rules, and submission data
+- **Flyway** - versioned schema migrations
+- **Hibernate 7** - JPA with schema validation on startup
 
 ## Features
 
