@@ -1,11 +1,13 @@
 package dev.ograh.dynamicforms.shared.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -37,13 +39,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpServletRequest req) {
         Map<String, String> fields = e.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.toMap(
-                        fe -> fe.getField(),
+                        FieldError::getField,
                         fe -> fe.getDefaultMessage() != null ? fe.getDefaultMessage() : "Invalid value",
                         (existing, duplicate) -> existing
                 ));
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(
-                new ErrorResponse("Validation failed", HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
-                        HttpStatus.UNPROCESSABLE_ENTITY.value(), now(), req.getRequestURI(), fields)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ErrorResponse("Validation failed", HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                        HttpStatus.BAD_REQUEST.value(), now(), req.getRequestURI(), fields)
         );
     }
 
@@ -52,20 +54,20 @@ public class GlobalExceptionHandler {
         Map<String, String> fields = e.getConstraintViolations().stream()
                 .collect(Collectors.toMap(
                         cv -> cv.getPropertyPath().toString(),
-                        cv -> cv.getMessage(),
+                        ConstraintViolation::getMessage,
                         (existing, duplicate) -> existing
                 ));
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(
-                new ErrorResponse("Validation failed", HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
-                        HttpStatus.UNPROCESSABLE_ENTITY.value(), now(), req.getRequestURI(), fields)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ErrorResponse("Validation failed", HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                        HttpStatus.BAD_REQUEST.value(), now(), req.getRequestURI(), fields)
         );
     }
 
     @ExceptionHandler(FormValidationException.class)
     public ResponseEntity<ErrorResponse> handleFormValidationException(FormValidationException e, HttpServletRequest req) {
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(
-                new ErrorResponse(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
-                        HttpStatus.UNPROCESSABLE_ENTITY.value(), now(), req.getRequestURI(), e.getErrors())
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                        HttpStatus.BAD_REQUEST.value(), now(), req.getRequestURI(), e.getErrors())
         );
     }
 
