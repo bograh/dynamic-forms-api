@@ -23,3 +23,7 @@ security-jwt:
   access-token-expiration-ms: 900000       # 15 minutes
   refresh-token-secret: bXlTdXBlclNlY3JldEtleUZvckpXVFJlZnJlc2hUb2tlbg==
   refresh-token-expiration-ms: 604800000   # 7 days
+
+allowed:
+  cors:
+    url: "*"
