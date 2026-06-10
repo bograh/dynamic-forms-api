@@ -45,7 +45,7 @@ public class FormServiceImpl implements FormService {
         Form form = new Form();
         form.setTitle(request.title());
         form.setDescription(request.description());
-        form.setSlug(request.slug());
+        form.setSlug(formHelper.generateSlug(request.title()));
         form.setStatus(FormStatus.DRAFT);
         form.setCreatedBy(formHelper.currentUsername());
         return formMapper.toFormDto(formRepository.save(form));
