@@ -27,3 +27,8 @@ security-jwt:
 allowed:
   cors:
     url: "*"
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
