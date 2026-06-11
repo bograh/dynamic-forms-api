@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/dynamicforms
+    username: app
+    password: apppassword
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+security-jwt:
+  access-token-secret: bXlTdXBlclNlY3JldEtleUZvckpXVEFjY2Vzc1Rva2Vu
+  access-token-expiration-ms: 900000       # 15 minutes
+  refresh-token-secret: bXlTdXBlclNlY3JldEtleUZvckpXVFJlZnJlc2hUb2tlbg==
+  refresh-token-expiration-ms: 604800000   # 7 days
+
+allowed:
+  cors:
+    url: "*"
+
+logging:
+  level:
+    root: INFO
+    dev.ograh: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE

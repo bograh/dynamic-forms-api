@@ -1,37 +1,18 @@
 spring:
   application:
     name: DynamicForms
-
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/dynamicforms
-    username: app
-    password: apppassword
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
+
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
     open-in-view: false
-
-security-jwt:
-  access-token-secret: bXlTdXBlclNlY3JldEtleUZvckpXVEFjY2Vzc1Rva2Vu
-  access-token-expiration-ms: 900000       # 15 minutes
-  refresh-token-secret: bXlTdXBlclNlY3JldEtleUZvckpXVFJlZnJlc2hUb2tlbg==
-  refresh-token-expiration-ms: 604800000   # 7 days
-
-allowed:
-  cors:
-    url: "*"
 
 server:
   port: 8085
-
-logging:
-  level:
-    org.springframework.security: DEBUG
-    org.springframework.web: DEBUG

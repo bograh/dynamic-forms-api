@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${TEST_DB_URL:jdbc:postgresql://localhost:5432/dynamicforms_test}
+    username: ${TEST_DB_USERNAME:app}
+    password: ${TEST_DB_PASSWORD:apppassword}
+
+  flyway:
+    clean-disabled: false   # allow clean between test runs
+
+  jpa:
+    show-sql: false
+
+security-jwt:
+  access-token-secret: dGVzdFNlY3JldEtleUZvckpXVEFjY2Vzc1Rva2Vu
+  access-token-expiration-ms: 300000      # 5 minutes
+  refresh-token-secret: dGVzdFJlZnJlc2hTZWNyZXRLZXlGb3JKV1RUb2tlbg==
+  refresh-token-expiration-ms: 3600000    # 1 hour
+
+allowed:
+  cors:
+    url: "*"
+
+logging:
+  level:
+    root: WARN
+    dev.ograh: INFO
