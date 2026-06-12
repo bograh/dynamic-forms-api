@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/base :: head('Admin — Forms')}"></head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<th:block th:replace="~{layout/base :: nav}"></th:block>
+
+<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">Forms</h1>
+        <a th:href="@{/admin/forms/new}"
+           class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors">
+            + New Form
+        </a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(forms)}"
+         class="text-center py-20 text-gray-400">No forms yet. Create one to get started.</div>
+
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+            <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                    <th class="text-left px-6 py-3 font-medium text-gray-500">Title</th>
+                    <th class="text-left px-6 py-3 font-medium text-gray-500">Slug</th>
+                    <th class="text-left px-6 py-3 font-medium text-gray-500">Status</th>
+                    <th class="text-left px-6 py-3 font-medium text-gray-500">Created</th>
+                    <th class="px-6 py-3"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                <tr th:each="form : ${forms}" class="hover:bg-gray-50">
+                    <td class="px-6 py-4 font-medium text-gray-900" th:text="${form.title}"></td>
+                    <td class="px-6 py-4 text-gray-500 font-mono text-xs" th:text="${form.slug}"></td>
+                    <td class="px-6 py-4">
+                        <span th:text="${form.status}"
+                              th:classappend="${form.status.name() == 'PUBLISHED'} ? 'bg-green-100 text-green-700' : (${form.status.name() == 'DRAFT'} ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600')"
+                              class="inline-block text-xs font-semibold px-2.5 py-1 rounded-full">
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-gray-400 text-xs"
+                        th:text="${#temporals.format(form.createdAt, 'MMM d, yyyy')}"></td>
+                    <td class="px-6 py-4">
+                        <div class="flex gap-3 justify-end text-xs font-medium">
+                            <a th:href="@{/admin/forms/{id}/edit(id=${form.id})}"
+                               class="text-indigo-600 hover:underline">Edit</a>
+                            <a th:href="@{/admin/forms/{id}/fields(id=${form.id})}"
+                               class="text-indigo-600 hover:underline">Fields</a>
+                            <a th:href="@{/admin/forms/{id}/submissions(id=${form.id})}"
+                               class="text-indigo-600 hover:underline">Submissions</a>
+                            <form th:if="${form.status.name() == 'DRAFT'}"
+                                  th:action="@{/admin/forms/{id}/publish(id=${form.id})}"
+                                  method="post" class="inline">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                <button type="submit" class="text-green-600 hover:underline">Publish</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<th:block th:replace="~{layout/base :: footer}"></th:block>
+</body>
+</html>
