@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/base :: head('Submissions')}"></head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<th:block th:replace="~{layout/base :: nav}"></th:block>
+
+<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
+    <div class="mb-8">
+        <a th:href="@{/admin/forms}" class="text-sm text-indigo-600 hover:underline">&larr; Back to Forms</a>
+        <h1 class="mt-3 text-2xl font-bold text-gray-900"
+            th:text="'Submissions — ' + ${form.title}">Submissions</h1>
+        <p class="mt-1 text-sm text-gray-500"
+           th:text="${submissions.totalElements} + ' total'"></p>
+    </div>
+
+    <div th:if="${#lists.isEmpty(submissions.content)}"
+         class="text-center py-20 text-gray-400">No submissions yet.</div>
+
+    <div th:unless="${#lists.isEmpty(submissions.content)}"
+         class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-6">
+        <table class="w-full text-sm">
+            <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                    <th class="text-left px-6 py-3 font-medium text-gray-500">Submitted By</th>
+                    <th class="text-left px-6 py-3 font-medium text-gray-500">Submitted At</th>
+                    <th class="text-left px-6 py-3 font-medium text-gray-500">Data Preview</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                <tr th:each="sub : ${submissions.content}" class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-gray-700" th:text="${sub.submittedBy}"></td>
+                    <td class="px-6 py-4 text-gray-400 text-xs"
+                        th:text="${#temporals.format(sub.submittedAt, 'MMM d, yyyy HH:mm')}"></td>
+                    <td class="px-6 py-4 text-gray-500 text-xs font-mono truncate max-w-xs"
+                        th:text="${sub.data}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${submissions.totalPages > 1}" class="flex justify-center gap-2">
+        <a th:unless="${submissions.first}"
+           th:href="@{/admin/forms/{id}/submissions(id=${form.id},page=${currentPage - 1})}"
+           class="px-4 py-2 text-sm rounded-lg border border-gray-300 bg-white hover:bg-gray-50">&larr; Prev</a>
+
+        <span th:each="i : ${#numbers.sequence(0, submissions.totalPages - 1)}">
+            <a th:href="@{/admin/forms/{id}/submissions(id=${form.id},page=${i})}"
+               th:text="${i + 1}"
+               th:classappend="${i == currentPage} ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 hover:bg-gray-50'"
+               class="px-4 py-2 text-sm rounded-lg border">1</a>
+        </span>
+
+        <a th:unless="${submissions.last}"
+           th:href="@{/admin/forms/{id}/submissions(id=${form.id},page=${currentPage + 1})}"
+           class="px-4 py-2 text-sm rounded-lg border border-gray-300 bg-white hover:bg-gray-50">Next &rarr;</a>
+    </div>
+</main>
+
+<th:block th:replace="~{layout/base :: footer}"></th:block>
+</body>
+</html>
