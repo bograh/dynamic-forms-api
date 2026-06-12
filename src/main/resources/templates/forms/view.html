@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/base :: head(${form.title})}"></head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<th:block th:replace="~{layout/base :: nav}"></th:block>
+
+<main class="flex-1 max-w-2xl mx-auto px-4 sm:px-6 py-10 w-full">
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900" th:text="${form.title}">Form Title</h1>
+        <p class="mt-2 text-gray-500 text-sm" th:text="${form.description}"></p>
+    </div>
+
+    <div th:if="${error}"
+         class="mb-6 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-red-700 text-sm"
+         th:text="${error}"></div>
+
+    <form th:action="@{/forms/{slug}/submit(slug=${form.slug})}" method="post"
+          class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 space-y-6">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <div th:each="field : ${form.fields}" class="space-y-1">
+            <label class="block text-sm font-medium text-gray-700"
+                   th:for="${field.fieldKey}"
+                   th:text="${field.label} + (${field.required} ? ' *' : '')">Label</label>
+
+            <p th:if="${field.helpText}" class="text-xs text-gray-400" th:text="${field.helpText}"></p>
+
+            <th:block th:switch="${field.fieldType.name()}">
+
+                <input th:case="'TEXT'" type="text"
+                       th:id="${field.fieldKey}" th:name="${field.fieldKey}"
+                       th:required="${field.required}"
+                       th:placeholder="${field.placeholder}"
+                       th:value="${submittedData != null ? submittedData[field.fieldKey] : field.defaultValue}"
+                       class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+
+                <input th:case="'EMAIL'" type="email"
+                       th:id="${field.fieldKey}" th:name="${field.fieldKey}"
+                       th:required="${field.required}"
+                       th:placeholder="${field.placeholder}"
+                       th:value="${submittedData != null ? submittedData[field.fieldKey] : field.defaultValue}"
+                       class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+
+                <input th:case="'PHONE'" type="tel"
+                       th:id="${field.fieldKey}" th:name="${field.fieldKey}"
+                       th:required="${field.required}"
+                       th:placeholder="${field.placeholder}"
+                       th:value="${submittedData != null ? submittedData[field.fieldKey] : field.defaultValue}"
+                       class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+
+                <input th:case="'NUMBER'" type="number"
+                       th:id="${field.fieldKey}" th:name="${field.fieldKey}"
+                       th:required="${field.required}"
+                       th:placeholder="${field.placeholder}"
+                       th:value="${submittedData != null ? submittedData[field.fieldKey] : field.defaultValue}"
+                       th:min="${field.validation?.min()}"
+                       th:max="${field.validation?.max()}"
+                       class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+
+                <input th:case="'DATE'" type="date"
+                       th:id="${field.fieldKey}" th:name="${field.fieldKey}"
+                       th:required="${field.required}"
+                       th:value="${submittedData != null ? submittedData[field.fieldKey] : field.defaultValue}"
+                       class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+
+                <textarea th:case="'TEXTAREA'"
+                          th:id="${field.fieldKey}" th:name="${field.fieldKey}"
+                          th:required="${field.required}"
+                          th:placeholder="${field.placeholder}"
+                          rows="4"
+                          class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          th:text="${submittedData != null ? submittedData[field.fieldKey] : field.defaultValue}"></textarea>
+
+                <select th:case="'SELECT'"
+                        th:id="${field.fieldKey}" th:name="${field.fieldKey}"
+                        th:required="${field.required}"
+                        class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="">-- Select --</option>
+                    <option th:each="opt : ${field.options}"
+                            th:value="${opt.value()}"
+                            th:text="${opt.label()}"
+                            th:selected="${submittedData != null and submittedData[field.fieldKey] == opt.value()}">Option</option>
+                </select>
+
+                <div th:case="'RADIO'" class="space-y-2">
+                    <div th:each="opt : ${field.options}" class="flex items-center gap-2">
+                        <input type="radio"
+                               th:id="${field.fieldKey + '-' + opt.value()}"
+                               th:name="${field.fieldKey}"
+                               th:value="${opt.value()}"
+                               th:required="${field.required}"
+                               th:checked="${submittedData != null and submittedData[field.fieldKey] == opt.value()}"
+                               class="text-indigo-600"/>
+                        <label th:for="${field.fieldKey + '-' + opt.value()}"
+                               class="text-sm text-gray-700"
+                               th:text="${opt.label()}">Option</label>
+                    </div>
+                </div>
+
+                <div th:case="'CHECKBOX'" class="space-y-2">
+                    <div th:each="opt : ${field.options}" class="flex items-center gap-2">
+                        <input type="checkbox"
+                               th:id="${field.fieldKey + '-' + opt.value()}"
+                               th:name="${field.fieldKey}"
+                               th:value="${opt.value()}"
+                               class="text-indigo-600"/>
+                        <label th:for="${field.fieldKey + '-' + opt.value()}"
+                               class="text-sm text-gray-700"
+                               th:text="${opt.label()}">Option</label>
+                    </div>
+                </div>
+
+            </th:block>
+
+            <p th:if="${fieldErrors != null and fieldErrors[field.fieldKey] != null}"
+               class="text-xs text-red-600"
+               th:text="${fieldErrors[field.fieldKey]}"></p>
+        </div>
+
+        <button type="submit"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors">
+            Submit
+        </button>
+    </form>
+</main>
+
+<th:block th:replace="~{layout/base :: footer}"></th:block>
+</body>
+</html>
