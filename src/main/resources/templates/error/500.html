@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Server Error')}"></head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+<div class="text-center">
+    <p class="text-6xl font-bold text-red-500">500</p>
+    <h1 class="mt-4 text-2xl font-bold text-gray-900">Something Went Wrong</h1>
+    <p class="mt-2 text-gray-500">An unexpected error occurred. Please try again later.</p>
+    <a th:href="@{/forms}" class="mt-6 inline-block text-indigo-600 hover:underline text-sm">
+        &larr; Back to Forms
+    </a>
+</div>
+</body>
+</html>
