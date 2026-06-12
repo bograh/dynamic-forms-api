@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,10 +50,12 @@ public class WebFormController {
                              HttpSession session,
                              Model model) {
         FormSchemaDto form = apiClient.get("/api/forms/" + slug, FormSchemaDto.class, session);
+        Map<String, String> payload = new HashMap<>(formData);
+        payload.remove("_csrf");
         try {
             apiClient.post(
                     "/api/forms/" + form.id() + "/submit",
-                    formData,
+                    payload,
                     SubmissionResponseDto.class,
                     session
             );

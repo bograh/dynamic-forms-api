@@ -7,8 +7,7 @@ import dev.ograh.dynamicforms.submission.dto.SubmissionResponseDto;
 import dev.ograh.dynamicforms.submission.service.FormSubmissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,8 +36,8 @@ public class FormController {
     public ResponseEntity<SubmissionResponseDto> submit(
             @PathVariable UUID id,
             @RequestBody Map<String, Object> data,
-            @AuthenticationPrincipal UserDetails user) {
-        FormSubmission submission = submissionService.submit(id, data, user.getUsername());
+            Authentication authentication) {
+        FormSubmission submission = submissionService.submit(id, data, authentication.getName());
         return ResponseEntity.status(201)
                 .body(new SubmissionResponseDto(submission.getId(), "Submission received"));
     }
