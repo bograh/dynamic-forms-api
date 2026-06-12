@@ -13,6 +13,9 @@ import java.util.List;
 
 public interface FormService {
     FormSchemaDto getPublishedBySlug(String slug);
+    List<FormSchemaDto> findAllPublished();
+    List<FormDto> findAll();
+    FormDto getById(String id);
     FormDto create(CreateFormRequest request);
     FormDto update(String id, UpdateFormRequest request);
     FormDto saveFields(String id, List<FormFieldRequest> fields);

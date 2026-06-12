@@ -24,6 +24,16 @@ public class FormAdminController {
 
     private final FormService formService;
 
+    @GetMapping
+    public ResponseEntity<List<FormDto>> listForms() {
+        return ResponseEntity.ok(formService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FormDto> getForm(@PathVariable String id) {
+        return ResponseEntity.ok(formService.getById(id));
+    }
+
     @PostMapping
     public ResponseEntity<FormDto> createForm(@RequestBody @Valid CreateFormRequest req) {
         return ResponseEntity.status(201).body(formService.create(req));

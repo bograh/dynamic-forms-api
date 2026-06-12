@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -21,6 +22,11 @@ public class FormController {
 
     private final FormService formService;
     private final FormSubmissionService submissionService;
+
+    @GetMapping
+    public ResponseEntity<List<FormSchemaDto>> listPublished() {
+        return ResponseEntity.ok(formService.findAllPublished());
+    }
 
     @GetMapping("/{slug}")
     public ResponseEntity<FormSchemaDto> getForm(@PathVariable String slug) {

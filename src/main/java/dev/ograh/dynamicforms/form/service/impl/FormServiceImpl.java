@@ -40,6 +40,28 @@ public class FormServiceImpl implements FormService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<FormSchemaDto> findAllPublished() {
+        return formRepository.findByStatus(FormStatus.PUBLISHED).stream()
+                .map(formMapper::toFormSchemaDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<FormDto> findAll() {
+        return formRepository.findAll().stream()
+                .map(formMapper::toFormDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public FormDto getById(String id) {
+        return formMapper.toFormDto(formHelper.findById(id));
+    }
+
+    @Override
     @Transactional
     public FormDto create(CreateFormRequest request) {
         Form form = new Form();
