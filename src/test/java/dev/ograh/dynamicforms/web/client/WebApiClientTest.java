@@ -24,7 +24,7 @@ class WebApiClientTest {
     void setup() {
         RestTemplate restTemplate = new RestTemplate();
         server = MockRestServiceServer.bindTo(restTemplate).build();
-        client = new WebApiClient(restTemplate);
+        client = new WebApiClient(restTemplate, "");
         session = new MockHttpSession();
         session.setAttribute("accessToken", "access-token-123");
     }

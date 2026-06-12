@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.ograh.dynamicforms.auth.dto.AuthResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -17,18 +18,21 @@ public class WebApiClient {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final String baseUrl;
 
-    public WebApiClient(RestTemplate restTemplate) {
+    public WebApiClient(RestTemplate restTemplate,
+                        @Value("${app.api.base-url:http://localhost:8085}") String baseUrl) {
         this.restTemplate = restTemplate;
         this.objectMapper = new ObjectMapper();
+        this.baseUrl = baseUrl;
     }
 
     public <T> T get(String path, Class<T> type, HttpSession session) {
         try {
-            return restTemplate.exchange(path, HttpMethod.GET, entity(null, session), type).getBody();
+            return restTemplate.exchange(baseUrl + path, HttpMethod.GET, entity(null, session), type).getBody();
         } catch (HttpClientErrorException.Unauthorized e) {
             refreshAndUpdate(session);
-            return restTemplate.exchange(path, HttpMethod.GET, entity(null, session), type).getBody();
+            return restTemplate.exchange(baseUrl + path, HttpMethod.GET, entity(null, session), type).getBody();
         } catch (HttpClientErrorException e) {
             throw toApiException(e);
         }
@@ -36,10 +40,10 @@ public class WebApiClient {
 
     public <T> T get(String path, ParameterizedTypeReference<T> type, HttpSession session) {
         try {
-            return restTemplate.exchange(path, HttpMethod.GET, entity(null, session), type).getBody();
+            return restTemplate.exchange(baseUrl + path, HttpMethod.GET, entity(null, session), type).getBody();
         } catch (HttpClientErrorException.Unauthorized e) {
             refreshAndUpdate(session);
-            return restTemplate.exchange(path, HttpMethod.GET, entity(null, session), type).getBody();
+            return restTemplate.exchange(baseUrl + path, HttpMethod.GET, entity(null, session), type).getBody();
         } catch (HttpClientErrorException e) {
             throw toApiException(e);
         }
@@ -47,10 +51,10 @@ public class WebApiClient {
 
     public <T> T post(String path, Object body, Class<T> type, HttpSession session) {
         try {
-            return restTemplate.exchange(path, HttpMethod.POST, entity(body, session), type).getBody();
+            return restTemplate.exchange(baseUrl + path, HttpMethod.POST, entity(body, session), type).getBody();
         } catch (HttpClientErrorException.Unauthorized e) {
             refreshAndUpdate(session);
-            return restTemplate.exchange(path, HttpMethod.POST, entity(body, session), type).getBody();
+            return restTemplate.exchange(baseUrl + path, HttpMethod.POST, entity(body, session), type).getBody();
         } catch (HttpClientErrorException e) {
             throw toApiException(e);
         }
@@ -58,10 +62,10 @@ public class WebApiClient {
 
     public void post(String path, HttpSession session) {
         try {
-            restTemplate.exchange(path, HttpMethod.POST, entity(null, session), Void.class);
+            restTemplate.exchange(baseUrl + path, HttpMethod.POST, entity(null, session), Void.class);
         } catch (HttpClientErrorException.Unauthorized e) {
             refreshAndUpdate(session);
-            restTemplate.exchange(path, HttpMethod.POST, entity(null, session), Void.class);
+            restTemplate.exchange(baseUrl + path, HttpMethod.POST, entity(null, session), Void.class);
         } catch (HttpClientErrorException e) {
             throw toApiException(e);
         }
@@ -69,10 +73,10 @@ public class WebApiClient {
 
     public <T> T put(String path, Object body, Class<T> type, HttpSession session) {
         try {
-            return restTemplate.exchange(path, HttpMethod.PUT, entity(body, session), type).getBody();
+            return restTemplate.exchange(baseUrl + path, HttpMethod.PUT, entity(body, session), type).getBody();
         } catch (HttpClientErrorException.Unauthorized e) {
             refreshAndUpdate(session);
-            return restTemplate.exchange(path, HttpMethod.PUT, entity(body, session), type).getBody();
+            return restTemplate.exchange(baseUrl + path, HttpMethod.PUT, entity(body, session), type).getBody();
         } catch (HttpClientErrorException e) {
             throw toApiException(e);
         }
@@ -98,7 +102,7 @@ public class WebApiClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         try {
             AuthResponse response = restTemplate.exchange(
-                    "/api/auth/refresh-token",
+                    baseUrl + "/api/auth/refresh-token",
                     HttpMethod.POST,
                     new HttpEntity<>(null, headers),
                     AuthResponse.class
